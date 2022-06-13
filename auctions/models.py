@@ -16,10 +16,9 @@ class Listing(models.Model):
 
     #Define many to many relationship to both comments and categories
     comment = models.ManyToManyField("Comment", blank= True, related_name= "Commented_by")
-    listing_category = models.ManyToManyField("Category", blank= True, related_name= "category")
 
     def __str__(self):
-        return f"id: {self.id}, Title: {self.title}, Description:{self.description}, category: {self.listing_category}."
+        return f"id: {self.id}, Title: {self.title}, Description:{self.description}"
 
 class Bid(models.Model):
     price = models.FloatField(default= 0.00, null= False)
@@ -35,9 +34,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Description: {self.description}, user: {self.user}."
-
-class Category(models.Model):
-    name = models.CharField(max_length= 20, primary_key= True, unique= True, default= "no category listed")
-
-    def __str__(self):
-        return f"id: {self.id}, name: {self.name}"
