@@ -5,32 +5,27 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+class Bid(models.Model):
+    price = models.FloatField(default= 0.00, null= False)
+    # User that placed the bid, and their subsequent bids
+    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "bids", blank=True)
+
+    def __str__(self):
+        return f"id: {self.id} user: {self.user}"
+
+
 class Listing(models.Model):
     title = models.CharField(max_length= 30)
     description = models.CharField(max_length= 200)
-    current_bid = models.FloatField(default= 0.00, null= False, blank = True)
-    #Define User object that posted the listing
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "listed_by")
-    #define a many to many relationship to bids
-    bids = models.ManyToManyField("Bid", blank= True, related_name= "bidders")
-
-    #Define many to many relationship to both comments and categories
-    comment = models.ManyToManyField("Comment", blank= True, related_name= "Commented_by")
+    starting_bid = models.FloatField(default= 0.00, null= False, blank = True)
+    #Define User that posted the listing. This is the user field for the model
+    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "listings")
+    bids = models.ManyToManyField(Bid, blank = True, related_name= "listing_bids")
+    # Define the many bids that could be placed on a particular listing 
 
     def __str__(self):
-        return f"id: {self.id}, Title: {self.title}, Description:{self.description}"
+        return f"id: {self.id} Title: {self.title}, Description:{self.description} Current Bid: {self.starting_bid}, user_id: {self.user}"
 
-class Bid(models.Model):
-    price = models.FloatField(default= 0.00, null= False)
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "bidder")
-    listing = models.ForeignKey(Listing, on_delete= models.CASCADE, related_name= "bidded_listed")
-
-    def __str__(self):
-        return f"id: {self.id} user: {self.user} Listing: {self.listing}"
 
 class Comment(models.Model):
-    description = models.CharField(max_length= 200)
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "commenter")
-
-    def __str__(self):
-        return f"Description: {self.description}, user: {self.user}."
+    pass
