@@ -12,7 +12,11 @@ class User(AbstractUser):
 class Listing(models.Model):
     title = models.CharField(max_length= 30)
     description = models.CharField(max_length= 200)
-    creator = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user", null=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user", null=True)
+    bid = models.ManyToManyField("Bid", related_name="current_bid", null=True)
+    bidders = models.ManyToManyField(User, blank=True, related_name="buyers")
+    pub_date = models.DateField(default=date.today)
+    mod_date = models.DateField(default=date.today)
 
     def __str__(self):
         return f"{self.title} - Creator: {self.creator}"
@@ -24,11 +28,13 @@ class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="buyer", null=True)
 
     def __str__(self):
-        return f"({self.id}) {self.amount} bidder: {self.bidder}"
+        return f"({self.id}) {self.amount} bidder: {self.bidder} Listing: {self.listing}"
 
  # Listing Entry - model for storing listing entries
+
 class Entry(models.Model):
     # Create a Listing field, reference to the Listing Table
+    """
     listing = models.ForeignKey(Listing, on_delete= models.CASCADE, related_name="on_sale")
     bid = models.ForeignKey(Bid, on_delete= models.CASCADE, related_name="current_bid", null=True)
     bidders = models.ManyToManyField(User, blank=True, related_name="buyers")
@@ -37,7 +43,8 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"({self.id}) {self.listing}"
-
+    """
+    pass
 
 class Comment(models.Model):
     pass
