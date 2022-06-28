@@ -17,6 +17,7 @@ class Listing(models.Model):
     bidders = models.ManyToManyField(User, blank=True, related_name="buyers")
     pub_date = models.DateField(default=date.today)
     mod_date = models.DateField(default=date.today)
+    comments = models.ManyToManyField("Comment", related_name="listing_comments", null=True)
 
     def __str__(self):
         return f"{self.title} - Creator: {self.creator}"

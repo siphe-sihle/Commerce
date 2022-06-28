@@ -16,8 +16,9 @@ def index(request):
 def listing_view(request, id):
     # Get particular listing details using the listing id
     listing = Listing.objects.get(pk = id)
-    # Generate Listing information from db using pk
-    return render(request, "auctions/listing.html", {"listing": listing})
+    # Get all comments for a particular listing using filter()
+    comments = Comment.objects.filter(listing_id = id)
+    return render(request, "auctions/listing.html", {"listing": listing, "comments": comments})
     pass
 
 

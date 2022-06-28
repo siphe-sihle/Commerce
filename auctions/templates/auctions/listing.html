@@ -6,6 +6,15 @@
     <h6>Published on: {{listing.pub_date}}</h4>
     <p> {{listing.description}}</p>
     <br>
+    <h3>Comments</h3>
+       <ul>
+            {% for comment in comments %}
+                <li>{{comment.description}}</li>
+            {% empty %}
+            <li>No comments posted for this listing</li>
+            {% endfor %}
+       </ul>
+        
     <div>
         {{listing.bid}}
     </div>
