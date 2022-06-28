@@ -1,5 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2> {{listing.title}}</h2>
+    <h1> {{listing.title}}</h2>
+    <h3>Listed by: {{listing.creator}}</h3>
+    <h6>Published on: {{listing.pub_date}}</h4>
+    <p> {{listing.description}}</p>
+    <br>
+    <div>
+        {{listing.bid}}
+    </div>
 {% endblock %}

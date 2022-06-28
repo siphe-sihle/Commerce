@@ -47,4 +47,10 @@ class Entry(models.Model):
     pass
 
 class Comment(models.Model):
-    pass
+    # Create Comment description field
+    description = models.CharField(max_length= 255, blank=True)
+    commented_by = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "commentator", null= True)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comment", null=True)
+
+    def __str__(self):
+        return f"{self.commented_by}, {self.description}, {self.listing}"
