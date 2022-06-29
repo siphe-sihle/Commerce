@@ -18,7 +18,10 @@ def listing_view(request, id):
     listing = Listing.objects.get(pk = id)
     # Get all comments for a particular listing using filter()
     comments = Comment.objects.filter(listing_id = id)
-    return render(request, "auctions/listing.html", {"listing": listing, "comments": comments})
+
+    # Get Current listing's bid, NEEDS SOME TWEAKING WHEN NEW VALUE IS ADDED AS THE CURRENT BID
+    current_bid = Bid.objects.filter(listing_id = id).last()
+    return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid})
     pass
 
 

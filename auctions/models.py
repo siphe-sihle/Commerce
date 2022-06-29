@@ -17,7 +17,8 @@ class Listing(models.Model):
     bidders = models.ManyToManyField(User, blank=True, related_name="buyers")
     pub_date = models.DateField(default=date.today)
     mod_date = models.DateField(default=date.today)
-    comments = models.ManyToManyField("Comment", related_name="listing_comments", null=True)
+    comments = models.ManyToManyField("Comment", related_name="listing_comments", null=True, blank=True)
+    category = models.ManyToManyField("Category", related_name="listing_category", null=True)
 
     def __str__(self):
         return f"{self.title} - Creator: {self.creator}"
@@ -55,3 +56,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.commented_by}, {self.description}, {self.listing}"
+    
+class Category(models.Model):
+    # model contains an id and name fields
+    name = models.CharField(max_length= 20, blank=True)
+    
+    def __str__(self):
+        return f"({self.id} {self.name})"
