@@ -19,4 +19,13 @@
         <h4>Current bid: </h4>
             <p>R {{current_bid.amount}}</p>
     </div>
+    
+    <div>
+        Category
+        <ul>
+            {% for cat in categories %}
+                <li>{{cat}}</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import *
-
+from auctions.forms import *
 
 def index(request):
     # Get all listings from the database
@@ -21,8 +21,20 @@ def listing_view(request, id):
 
     # Get Current listing's bid, NEEDS SOME TWEAKING WHEN NEW VALUE IS ADDED AS THE CURRENT BID
     current_bid = Bid.objects.filter(listing_id = id).last()
-    return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid})
+
+    # Now get the list of all categories for a particular listing
+    categories = Category.objects.all()
+    # Categories for a specific listing
+    listing_categories = listing.category.all()
+    return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
+    "categories": listing_categories})
     pass
+
+# New Listing view
+def create_listing(request):
+    # else if request method is "GET", just render the form
+    f = CreateListingForm(request.POST)
+    return render(request, "auctions/create.html", {"form": f})
 
 
 def login_view(request):

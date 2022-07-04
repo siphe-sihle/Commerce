@@ -59,7 +59,7 @@ class Comment(models.Model):
     
 class Category(models.Model):
     # model contains an id and name fields
-    name = models.CharField(max_length= 20, blank=True)
+    name = models.CharField(max_length= 20, default="none")
     
     def __str__(self):
         return f"({self.id} {self.name})"
