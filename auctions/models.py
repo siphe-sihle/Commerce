@@ -13,6 +13,8 @@ class Listing(models.Model):
     title = models.CharField(max_length= 30)
     description = models.CharField(max_length= 200)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user", null=True)
+    #New Addition: starting Bid
+    #starting_bid = models.FloatField(null=True)
     bid = models.ManyToManyField("Bid", related_name="current_bid", null=True)
     bidders = models.ManyToManyField(User, blank=True, related_name="buyers")
     pub_date = models.DateField(default=date.today)
@@ -26,7 +28,7 @@ class Listing(models.Model):
  
 class Bid(models.Model):
     amount = models.FloatField(null=True)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="on_auction", null=True)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="offers", null=True)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="buyer", null=True)
 
     def __str__(self):
@@ -52,7 +54,7 @@ class Comment(models.Model):
     # Create Comment description field
     description = models.CharField(max_length= 255, blank=True)
     commented_by = models.ForeignKey(User, on_delete= models.CASCADE, related_name= "commentator", null= True)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comment", null=True)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="opinions", null=True)
 
     def __str__(self):
         return f"{self.commented_by}, {self.description}, {self.listing}"

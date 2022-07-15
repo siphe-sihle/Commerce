@@ -1,7 +1,7 @@
 #from tkinter import Widget
 from auctions.models import *
 from django.db import models
-from django.forms import FloatField, ModelForm, Textarea
+from django.forms import FloatField, ModelForm, NumberInput, Textarea
 #from .models import *
 
 # Create an "add listing" form

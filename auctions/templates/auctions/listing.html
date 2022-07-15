@@ -5,6 +5,7 @@
     <h3>Listed by: {{listing.creator}}</h3>
     <h6>Published on: {{listing.pub_date}}</h4>
     <p> {{listing.description}}</p>
+    <p>bid: {{current_bid.amount}}</p>
     <br>
     <h3>Comments</h3>
        <ul>
@@ -18,6 +19,7 @@
     <div>
         <h4>Current bid: </h4>
             <p>R {{current_bid.amount}}</p>
+            <p4>{{count_offers}} bid(s) made so far</p4>
     </div>
     
     <div>
@@ -27,5 +29,11 @@
                 <li>{{cat}}</li>
             {% endfor %}
         </ul>
+    </div>
+
+    <div>
+        <p3>Listed by: <strong>{{listing.creator}}</strong></p3>
+        <br>
+        <p4>Listing date: {{listing.pub_date}}</p4>
     </div>
 {% endblock %}

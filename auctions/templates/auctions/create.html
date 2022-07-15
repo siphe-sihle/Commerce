@@ -3,8 +3,19 @@
 {% block body %}
     <h1>Create Listing</h1>
     
-    <form action="{% url 'create' %"} method="post">
+    <form action="{% url 'create' %}" method="post">
         {% csrf_token %}
-        {{form}}
+        
+        <div>
+            <p>Logged in User: {{user.username}}</p>
+            <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
+            
+            <input class="form-control" type="text" name="title" placeholder="listing title">
+            <input class="form-control" type="text" name="description" placeholder="Description">
+            <input class="form-control" type="number" name="bid" placeholder="bid">
+
+            <input class="btn btn-primary" type="submit" value="Place Bid!">
+        </div>
+        
     </form>
 {% endblock %}

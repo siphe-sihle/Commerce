@@ -20,20 +20,64 @@ def listing_view(request, id):
     comments = Comment.objects.filter(listing_id = id)
 
     # Get Current listing's bid, NEEDS SOME TWEAKING WHEN NEW VALUE IS ADDED AS THE CURRENT BID
-    current_bid = Bid.objects.filter(listing_id = id).last()
+    #Fixed - Orderd in descending order, the first one in order is the current bid
+    current_bid = listing.offers.order_by("-amount").first()
+    #current_bid = Bid.objects.filter(listing_id = id).last()
 
     # Now get the list of all categories for a particular listing
     categories = Category.objects.all()
     # Categories for a specific listing
     listing_categories = listing.category.all()
+
+    # Number of bids for the current listing:
+    bid_count = listing.offers.count()
+
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
-    "categories": listing_categories})
+    "categories": listing_categories,
+    "count_offers": bid_count})
     pass
 
 # New Listing view
 def create_listing(request):
+
+    if request.method == "POST":
+        # User in question (logged in user) that is creating the listing, get ID of the user, data lives in request.POST
+        get_creator = int(request.POST["creator"])
+        print(get_creator)
+        get_title = request.POST["title"]
+        print(f"title: {get_title}")
+        get_description = request.POST["description"]
+        print(f"description: {get_description}")
+
+        get_bid = int(request.POST["bid"])
+        print(f"bid: {get_bid}")
+
+        # Here's how its gonna work:
+        # 1. Create and save a listing 1st before saving the amount for the listing.
+        # 2. That listing amount is the initial bid for the listing
+
+        # 1
+        creator_obj = User.objects.get(pk = get_creator)
+        create_listing = Listing.objects.create(title = get_title, description = get_description, creator = creator_obj)
+
+        # 2 Now add bid obj to be able to add amount to a particular listing
+        listing_id = create_listing.id
+
+        # Create bid for this particular listing
+        bid_obj = Bid.objects.create(amount = get_bid, listing = create_listing, bidder = creator_obj) 
+
+        #2.1 update the Listing field for the bid
+
+        #create_listing_bidobj = Bid.objects.create(amount = get_bid, listing = )
+
     # else if request method is "GET", just render the form
+    
+    # User in question that is creating the listing, get ID of the user, data lives in request.POST
     f = CreateListingForm(request.POST)
+
+    #For now we will create the form manually for the simplicity of it
+    # Get all the models and then create the listing
+
     return render(request, "auctions/create.html", {"form": f})
 
 
