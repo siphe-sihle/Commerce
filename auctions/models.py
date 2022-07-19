@@ -65,3 +65,11 @@ class Category(models.Model):
     
     def __str__(self):
         return f"({self.id} {self.name})"
+
+# Create watchlist model
+class Watchlist(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watched")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishes")
+    
+    def __str__(self):
+        return f"{self.user}({self.listing})"

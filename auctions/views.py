@@ -36,7 +36,8 @@ def listing_view(request, id):
         # Render the current listing page after placing a bid
         return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
 
-
+    # Else if request method is "GET", just render the current listing page:
+    
     # Get particular listing details using the listing id
     listing = Listing.objects.get(pk = id)
     # Get all comments for a particular listing using filter()
