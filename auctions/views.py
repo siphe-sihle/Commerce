@@ -14,6 +14,29 @@ def index(request):
 
 # Listing view
 def listing_view(request, id):
+    
+    # if request method is "POST" i.e if logged in user places a bid on a listing
+    if request.method == "POST":
+        # let the user post/place a bid on a listing item
+        # Get user id of logged in user
+        get_creator = int(request.POST["creator"])
+
+        # Create user Object
+        user_obj = User.objects.get(pk=get_creator)
+
+        # Get placed bid on listing:
+        get_bid = float(request.POST["bid"])
+
+        # get current listing:
+        current_listing = Listing.objects.get(pk=id)
+
+        # Insert this bid for the current listing into the Bid Table
+        Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
+
+        # Render the current listing page after placing a bid
+        return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
+
+
     # Get particular listing details using the listing id
     listing = Listing.objects.get(pk = id)
     # Get all comments for a particular listing using filter()
@@ -49,7 +72,7 @@ def create_listing(request):
         get_description = request.POST["description"]
         print(f"description: {get_description}")
 
-        get_bid = int(request.POST["bid"])
+        get_bid = float(request.POST["bid"])
         print(f"bid: {get_bid}")
 
         # Here's how its gonna work:
@@ -68,7 +91,8 @@ def create_listing(request):
 
         #2.1 update the Listing field for the bid
 
-        #create_listing_bidobj = Bid.objects.create(amount = get_bid, listing = )
+        # Redirect user to the newly added listing page
+        return HttpResponseRedirect(reverse("listings", args={f"{listing_id}"}))
 
     # else if request method is "GET", just render the form
     

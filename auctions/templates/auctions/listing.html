@@ -21,6 +21,17 @@
             <p>R {{current_bid.amount}}</p>
             <p4>{{count_offers}} bid(s) made so far</p4>
     </div>
+
+    <!-- Form section to allow logged in user to place a bid -->
+    <div>
+        <form action="{% url 'listings' listing.id %}" method="post">
+            {% csrf_token %}
+            <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
+            <input class="form-control" type="number" name="bid" placeholder="bid">
+
+            <input class="btn btn-primary" type="submit" value="Place Bid!">
+        </form>
+    </div>
     
     <div>
         Category
