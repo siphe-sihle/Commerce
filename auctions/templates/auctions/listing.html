@@ -29,7 +29,18 @@
             <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
             <input class="form-control" type="number" name="bid" placeholder="bid">
 
-            <input class="btn btn-primary" type="submit" value="Place Bid!">
+            <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
+            <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
+            <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
+            <!--showing success message-->
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags%} class="{{ message.tags }}" {% endif %}>{{message}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">
         </form>
     </div>
     

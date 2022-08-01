@@ -3,6 +3,8 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import *
 from auctions.forms import *
@@ -17,25 +19,39 @@ def listing_view(request, id):
     
     # if request method is "POST" i.e if logged in user places a bid on a listing
     if request.method == "POST":
-        # let the user post/place a bid on a listing item
-        # Get user id of logged in user
-        get_creator = int(request.POST["creator"])
+        if 'place' in request.POST:
 
-        # Create user Object
-        user_obj = User.objects.get(pk=get_creator)
+            # let the user post/place a bid on a listing item
+            # Get user id of logged in user
+            get_creator = int(request.POST["creator"])
 
-        # Get placed bid on listing:
-        get_bid = float(request.POST["bid"])
+            # Create user Object
+            user_obj = User.objects.get(pk=get_creator)
 
-        # get current listing:
-        current_listing = Listing.objects.get(pk=id)
+            # Get placed bid on listing:
+            get_bid = float(request.POST["bid"])
 
-        # Insert this bid for the current listing into the Bid Table
-        Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
+            # get current listing:
+            current_listing = Listing.objects.get(pk=id)
 
-        # Render the current listing page after placing a bid
+            # Insert this bid for the current listing into the Bid Table
+            Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
+            messages.info(request, "Bid probably placed!")
+
+            # Render the current listing page after placing a bid
+            #return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
+            
+        if 'wishlist' in request.POST:
+            current_listing = Listing.objects.get(pk=id)
+            # Note: The line below does not work when using "request.user" because that is an object, not a number or string 
+            curr_user = int(request.POST["creator"])
+            print(f"current: {curr_user}")
+            userobj = User.objects.get(pk=curr_user)
+            #add item to user's watchlist
+            Watchlist.objects.create(listing=current_listing, user=userobj)
+            messages.info(request, 'listing Added to wishlist!')
+
         return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
-
     # Else if request method is "GET", just render the current listing page:
     
     # Get particular listing details using the listing id
@@ -104,6 +120,20 @@ def create_listing(request):
     # Get all the models and then create the listing
 
     return render(request, "auctions/create.html", {"form": f})
+
+# Watchlist view
+#@login_required
+def watchlist_view(request):
+    # Get current user like so:
+    current_user = request.user
+    print(f"current user: {current_user.id}")
+    return render(request, "auctions/watchlist.html", {"items": Watchlist.objects.filter(user_id=current_user)})
+    pass
+
+
+# Categories view
+def category_view(request):
+    pass
 
 
 def login_view(request):
