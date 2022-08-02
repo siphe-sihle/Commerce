@@ -70,6 +70,7 @@ class Category(models.Model):
 class Watchlist(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watched")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="wishes")
-    
+    # status of either a listing is added to a particular user's watchlist or not. new additionto the table
+    status = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.user}({self.listing})"

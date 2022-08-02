@@ -16,23 +16,27 @@ def index(request):
 
 # Listing view
 def listing_view(request, id):
-    
+
     # if request method is "POST" i.e if logged in user places a bid on a listing
     if request.method == "POST":
+        # Global variables under the "POST" condition that are consistent and obey scope throughout this "listing_view":
+        get_creator = int(request.POST["creator"])
+        user_obj = User.objects.get(pk=get_creator)
+        current_listing = Listing.objects.get(pk=id)
         if 'place' in request.POST:
 
             # let the user post/place a bid on a listing item
-            # Get user id of logged in user
-            get_creator = int(request.POST["creator"])
+            # Get user id of logged in user: works
+            #get_creator = int(request.POST["creator"])
 
-            # Create user Object
-            user_obj = User.objects.get(pk=get_creator)
+            # Create user Object: works
+            #user_obj = User.objects.get(pk=get_creator)
 
-            # Get placed bid on listing:
+            # Get placed bid on listing: works
             get_bid = float(request.POST["bid"])
 
-            # get current listing:
-            current_listing = Listing.objects.get(pk=id)
+            # get current listing: works
+            #current_listing = Listing.objects.get(pk=id)
 
             # Insert this bid for the current listing into the Bid Table
             Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
@@ -40,22 +44,42 @@ def listing_view(request, id):
 
             # Render the current listing page after placing a bid
             #return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
-            
-        if 'wishlist' in request.POST:
-            current_listing = Listing.objects.get(pk=id)
+        
+        # Global variables for our choice of submit buttons below
+        user_watchlist = Watchlist.objects.filter(user=get_creator)
+
+        if 'add' in request.POST:
+            #current_listing = Listing.objects.get(pk=id)
             # Note: The line below does not work when using "request.user" because that is an object, not a number or string 
-            curr_user = int(request.POST["creator"])
-            print(f"current: {curr_user}")
-            userobj = User.objects.get(pk=curr_user)
+            #get_creator = int(request.POST["creator"])
+            print(f"current: {get_creator}")
+            #userobj = User.objects.get(pk=get_creator)
             #add item to user's watchlist, 1st check if listing is already in watchlist: FIX LATER - WORKS!
-            user_watchlist = Watchlist.objects.filter(user=curr_user)
+            
             for item in user_watchlist:
                 if item.listing.id == current_listing.id:
                     messages.info(request, 'listing ALREADY Added to wishlist!')
+                    #Just check the status field for the particular listing to true for now
+                    item.status = True
+                    #update the item's status
+                    item.save()
                     return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
             
-            Watchlist.objects.create(listing=current_listing, user=userobj)
-            messages.info(request, 'listing Added to wishlist!')
+            Watchlist.objects.create(listing=current_listing, user=user_obj)
+            messages.info(request, f'{current_listing.title} Added to wishlist!')
+        
+        if 'remove' in request.POST:
+            for item in user_watchlist:
+                if item.listing.id == current_listing.id:
+                    # Remove that particular listing from user's Watchlist
+                    item.status = False
+                    item.save()
+                    item.delete()
+                    messages.info(request, f'{current_listing.title} REMOVED From wishlist!')
+                    return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
+        
+        # What if our "add to wishlist" button/text changes dynamically depending on whether the listing is added to wishlist or not? Lets see below
+        # We'll figure that out as we go
 
         return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
     # Else if request method is "GET", just render the current listing page:
@@ -78,9 +102,24 @@ def listing_view(request, id):
     # Number of bids for the current listing:
     bid_count = listing.offers.count()
 
+    # Checking whether item is in logged-in user's watchlist
+    curr_user = request.user
+    watchlist_status = Watchlist.objects.filter(user=curr_user.id)
+
+    # Initialise wishlist_status
+    status = None
+    print(f"watchlist: {watchlist_status}")
+
+    # Check if currwnt liating in listing page is in the watchlist for the currently logged_in user
+    for item in watchlist_status:
+        if item.listing.id == listing.id:
+            status = True
+
+
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
     "categories": listing_categories,
-    "count_offers": bid_count})
+    "count_offers": bid_count,
+    "status": status})
     pass
 
 # New Listing view

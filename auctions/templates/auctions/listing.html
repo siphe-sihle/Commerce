@@ -29,9 +29,6 @@
             <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
             <input class="form-control" type="number" name="bid" placeholder="bid">
 
-            <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
-            <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
-            <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
             <!--showing success message-->
             {% if messages %}
             <ul class="messages">
@@ -40,7 +37,18 @@
                 {% endfor %}
             </ul>
             {% endif %}
-            <input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">
+
+            <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
+            <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
+            <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
+
+            <!-- For this add/remove button, we need to check the watchlist status, whether the listing is the watchlist (true) or otherwise-->
+            {% if status == True %}
+                <input id="remove" class="btn btn-danger" type="submit" value="remove from Wishlist" name="remove">
+            {% else %}
+            <input id="remove" class="btn btn-primary" type="submit" value="Add to Wishlist" name="add">
+            {% endif %}
+            <!--<input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">--> 
         </form>
     </div>
     
