@@ -6,7 +6,7 @@
     <div>
         <ul>
             {% for item in items %}
-                <li>{{item}}</li>
+                <li><a href="listings/{{item.listing.id}}">{{item.listing.title}}</a></li>
             {% empty %}
             <li> No listings added yet</li>
             {% endfor %}

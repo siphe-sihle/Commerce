@@ -47,7 +47,13 @@ def listing_view(request, id):
             curr_user = int(request.POST["creator"])
             print(f"current: {curr_user}")
             userobj = User.objects.get(pk=curr_user)
-            #add item to user's watchlist
+            #add item to user's watchlist, 1st check if listing is already in watchlist: FIX LATER - WORKS!
+            user_watchlist = Watchlist.objects.filter(user=curr_user)
+            for item in user_watchlist:
+                if item.listing.id == current_listing.id:
+                    messages.info(request, 'listing ALREADY Added to wishlist!')
+                    return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
+            
             Watchlist.objects.create(listing=current_listing, user=userobj)
             messages.info(request, 'listing Added to wishlist!')
 
