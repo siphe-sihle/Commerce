@@ -62,10 +62,10 @@ def listing_view(request, id):
                     #Just check the status field for the particular listing to true for now
                     item.status = True
                     #update the item's status
-                    item.save()
+                    item.save(update_fields=['status'])
                     return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
             
-            Watchlist.objects.create(listing=current_listing, user=user_obj)
+            Watchlist.objects.create(listing=current_listing, user=user_obj, status=True)
             messages.info(request, f'{current_listing.title} Added to wishlist!')
         
         if 'remove' in request.POST:
@@ -78,10 +78,25 @@ def listing_view(request, id):
                     messages.info(request, f'{current_listing.title} REMOVED From wishlist!')
                     return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
         
+        # Add signed-in user's ability to close the listing
+        if "close" in request.POST:
+            # Check if current listing has been created by signed-in user
+            user_listings = Listing.objects.filter(creator=user_obj)
+
+            if current_listing in user_listings:
+                #Give logged in user the ability to close the auction and update listing's "active" field to False
+                current_listing.active = False
+                current_listing.save(update_fields=['active'])
+
+            messages.info(request, f'{current_listing.title}: Auction has now been closed!')    
+            pass
+        
         # What if our "add to wishlist" button/text changes dynamically depending on whether the listing is added to wishlist or not? Lets see below
         # We'll figure that out as we go
 
         return HttpResponseRedirect(reverse("listings", args={f"{id}"}))
+
+
     # Else if request method is "GET", just render the current listing page:
     
     # Get particular listing details using the listing id
@@ -110,16 +125,28 @@ def listing_view(request, id):
     status = None
     print(f"watchlist: {watchlist_status}")
 
-    # Check if currwnt liating in listing page is in the watchlist for the currently logged_in user
+    # Check if current listing in listing page is in the watchlist for the currently logged_in user
     for item in watchlist_status:
         if item.listing.id == listing.id:
             status = True
 
+    # CLOSING THE AUCTION: Check if the logged-in user is the one who created the listing, to be able to display/hide the "close auction" button
+    
+    # Listing activity status
+    listing_activity = listing.active
 
+    if curr_user.id == listing.creator.id and listing_activity == True:
+        close_auction_btn = True
+    else:
+        close_auction_btn = False
+
+    # Only render the listing page if the listing is active: We canmake that check on the template itself
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
     "categories": listing_categories,
     "count_offers": bid_count,
-    "status": status})
+    "status": status,
+    "listing_activity": listing_activity,
+    "close_auction_btn": close_auction_btn})
     pass
 
 # New Listing view

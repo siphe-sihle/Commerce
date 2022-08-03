@@ -22,35 +22,50 @@
             <p4>{{count_offers}} bid(s) made so far</p4>
     </div>
 
-    <!-- Form section to allow logged in user to place a bid -->
-    <div>
-        <form action="{% url 'listings' listing.id %}" method="post">
-            {% csrf_token %}
-            <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
-            <input class="form-control" type="number" name="bid" placeholder="bid">
+    <!--Form section only shows up if the listing is still active/open and not closed-->
 
-            <!--showing success message-->
-            {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags%} class="{{ message.tags }}" {% endif %}>{{message}}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+    {% if listing_activity == True %}
+        <!-- Form section to allow logged in user to place a bid -->
+        <div>
+            <form action="{% url 'listings' listing.id %}" method="post">
+                {% csrf_token %}
+                <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
+                <input class="form-control" type="number" name="bid" placeholder="bid">
 
-            <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
-            <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
-            <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
+                <!--showing success message-->
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li {% if message.tags%} class="{{ message.tags }}" {% endif %}>{{message}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
 
-            <!-- For this add/remove button, we need to check the watchlist status, whether the listing is the watchlist (true) or otherwise-->
-            {% if status == True %}
-                <input id="remove" class="btn btn-danger" type="submit" value="remove from Wishlist" name="remove">
-            {% else %}
-            <input id="remove" class="btn btn-primary" type="submit" value="Add to Wishlist" name="add">
-            {% endif %}
-            <!--<input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">--> 
-        </form>
-    </div>
+                <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
+                <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
+                <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
+
+                <!-- For this add/remove button, we need to check the watchlist status, whether the listing is the watchlist (true) or otherwise-->
+                {% if status == True %}
+                    <input id="remove" class="btn btn-danger" type="submit" value="remove from Wishlist" name="remove">
+                {% else %}
+                <input id="remove" class="btn btn-primary" type="submit" value="Add to Wishlist" name="add">
+                {% endif %}
+
+                {% if close_auction_btn == True %}
+                    <div>
+                        <input id="close" class="btn btn-warning" type="submit" value="close Auction" name="close">
+                    </div>
+                {% endif %}
+                <!--<input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">--> 
+            </form>
+        </div>
+    {% else %}
+        <div>
+            <h1><em>The auction for this listing has been closed and no longer active for bidding</em></h1>
+        </div>
+
+    {% endif %}
     
     <div>
         Category

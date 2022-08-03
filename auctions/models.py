@@ -21,6 +21,8 @@ class Listing(models.Model):
     mod_date = models.DateField(default=date.today)
     comments = models.ManyToManyField("Comment", related_name="listing_comments", null=True, blank=True)
     category = models.ManyToManyField("Category", related_name="listing_category", null=True)
+    # New Addtion: listing activity status
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.title} - Creator: {self.creator}"
