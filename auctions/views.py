@@ -215,8 +215,24 @@ def watchlist_view(request):
 
 # Categories view
 def category_view(request):
+    # get all categories from the database
+
+    return render(request,"auctions/category.html",{"categories": Category.objects.all().order_by('name').values()})
     pass
 
+# Filtered catgories view
+
+def filtered_category_view(request, category_id):
+    # get all listings that belong to a particular category
+
+    category_name = Category.objects.get(pk=category_id)
+
+    # Listings that belong to a certain category_id, using the category_name object
+
+    Category_listings = Listing.objects.filter(category=category_name)
+
+    return render(request, "auctions/filtered.html", {"listings": Category_listings,
+    "category": category_name})
 
 def login_view(request):
     if request.method == "POST":

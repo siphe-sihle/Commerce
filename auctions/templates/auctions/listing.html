@@ -82,7 +82,7 @@
         Category
         <ul>
             {% for cat in categories %}
-                <li>{{cat}}</li>
+                <li><a href="{% url 'filtered' cat.id %}">{{cat.name}}</a></li>
             {% endfor %}
         </ul>
     </div>
