@@ -90,6 +90,16 @@ def listing_view(request, id):
 
             messages.info(request, f'{current_listing.title}: Auction has now been closed!')    
             pass
+
+        # Add signed-in user's ability to post comments to the listing
+        if "comment" in request.POST:
+            # get listing's object, current_user objects and then create the comment in the db
+            
+            #Get comment description
+            get_description = request.POST[f"add_comments"]
+            logged_in_user = request.user
+            Comment.objects.create(description=get_description, commented_by=logged_in_user, listing=current_listing)
+            pass
         
         # What if our "add to wishlist" button/text changes dynamically depending on whether the listing is added to wishlist or not? Lets see below
         # We'll figure that out as we go

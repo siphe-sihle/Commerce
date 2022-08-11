@@ -5,16 +5,7 @@
     <h3>Listed by: {{listing.creator}}</h3>
     <h6>Published on: {{listing.pub_date}}</h4>
     <p> {{listing.description}}</p>
-    <p>bid: {{current_bid.amount}}</p>
     <br>
-    <h3>Comments</h3>
-       <ul>
-            {% for comment in comments %}
-                <li>{{comment.description}}</li>
-            {% empty %}
-            <li>No comments posted for this listing</li>
-            {% endfor %}
-       </ul>
         
     <div>
         <h4>Current bid: </h4>
@@ -58,6 +49,26 @@
                     </div>
                 {% endif %}
                 <!--<input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">--> 
+
+                <!-- Add ability for users to add comments -->
+                <div>
+                    <h3>Comments</h3>
+                        <ul>
+                            {% for comment in comments %}
+                                <div class="comment_username">
+                                    <strong>{{comment.commented_by}}</strong>
+                                </div>
+                                <li>{{comment.description}}</li>
+                            {% empty %}
+                            <li>No comments posted for this listing</li>
+                            {% endfor %}
+                        </ul>
+                    <!-- Text Area for comments -->
+                    <p><label for="add_comments"><strong>Type in your thoughts below</strong></label></p>
+                    <textarea id="add_comments" name="add_comments" rows="4" cols="100" placeholder="Add comments to this listing"></textarea>
+                    <br>
+                    <input type="submit" id="comment" class="btn btn-primary" value="post comment" name="comment">
+                </div>
             </form>
         </div>
     {% else %}
