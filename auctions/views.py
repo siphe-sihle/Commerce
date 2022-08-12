@@ -140,6 +140,12 @@ def listing_view(request, id):
     # Number of bids for the current listing:
     bid_count = listing.offers.count()
 
+    # Actual number of bids excluding the minimum bid placed by the listing creator
+    actual_bid_count = bid_count - 1
+    
+    if actual_bid_count < 0:
+        actual_bid_count = 0
+
     # Checking whether item is in logged-in user's watchlist
     curr_user = request.user
     watchlist_status = Watchlist.objects.filter(user=curr_user.id)
@@ -167,7 +173,7 @@ def listing_view(request, id):
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
     "minimum_bid": starting_bid,
     "categories": listing_categories,
-    "count_offers": bid_count,
+    "count_offers": actual_bid_count,
     "status": status,
     "listing_activity": listing_activity,
     "close_auction_btn": close_auction_btn})
