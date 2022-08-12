@@ -6,10 +6,15 @@
     <h6>Published on: {{listing.pub_date}}</h4>
     <p> {{listing.description}}</p>
     <br>
-        
+    
+    <div>
+        <h4>Minimum Bid: </h4>
+            <p>R {{minimum_bid}}</p>
+    </div>
+
     <div>
         <h4>Current bid: </h4>
-            <p>R {{current_bid.amount}}</p>
+            <p>R {{current_bid}}</p>
             <p4>{{count_offers}} bid(s) made so far</p4>
     </div>
 
@@ -83,6 +88,8 @@
         <ul>
             {% for cat in categories %}
                 <li><a href="{% url 'filtered' cat.id %}">{{cat.name}}</a></li>
+                {% empty %}
+                <li>No Categories Listed</li>
             {% endfor %}
         </ul>
     </div>

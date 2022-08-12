@@ -1,3 +1,4 @@
+from distutils.log import error
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -8,6 +9,7 @@ from django.contrib import messages
 
 from .models import *
 from auctions.forms import *
+from django.db.models import Avg, Max, Min, Sum
 
 def index(request):
     # Get all listings from the database
@@ -34,10 +36,17 @@ def listing_view(request, id):
 
             # Get placed bid on listing: works
             get_bid = float(request.POST["bid"])
+            
+            #Error checking: Check if the bid is at least as large as the starting bid, and must be greater than any other bids that have been placed (if any)
 
-            # get current listing: works
-            #current_listing = Listing.objects.get(pk=id)
-
+            # Get Max bid for the listing
+            max_bid = current_listing.offers.all().aggregate(Max('amount'))
+            
+            if max_bid.get('amount__max') > get_bid:
+                return render(request, "auctions/error.html",{"message": f"R{get_bid} amount is lower than the current bid! Place a bid that is greater than that of the current bid!"})
+            
+            # Else continue placing the bid
+            
             # Insert this bid for the current listing into the Bid Table
             Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
             messages.info(request, "Bid probably placed!")
@@ -116,7 +125,11 @@ def listing_view(request, id):
 
     # Get Current listing's bid, NEEDS SOME TWEAKING WHEN NEW VALUE IS ADDED AS THE CURRENT BID
     #Fixed - Orderd in descending order, the first one in order is the current bid
-    current_bid = listing.offers.order_by("-amount").first()
+    max_amount = listing.offers.aggregate(Max('amount'))
+    min_amount = listing.offers.aggregate(Min('amount'))
+    starting_bid = min_amount.get('amount__min')
+    current_bid = max_amount.get('amount__max')
+    print(f"current_amount: {current_bid}")
     #current_bid = Bid.objects.filter(listing_id = id).last()
 
     # Now get the list of all categories for a particular listing
@@ -152,6 +165,7 @@ def listing_view(request, id):
 
     # Only render the listing page if the listing is active: We canmake that check on the template itself
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
+    "minimum_bid": starting_bid,
     "categories": listing_categories,
     "count_offers": bid_count,
     "status": status,
@@ -173,6 +187,10 @@ def create_listing(request):
 
         get_bid = float(request.POST["bid"])
         print(f"bid: {get_bid}")
+
+        # Get (a list) of categories a user will select when creating a listing
+        get_categories = request.POST.getlist("categories")
+        print(f"selected categories: {get_categories}")
 
         # Here's how its gonna work:
         # 1. Create and save a listing 1st before saving the amount for the listing.
@@ -201,7 +219,7 @@ def create_listing(request):
     #For now we will create the form manually for the simplicity of it
     # Get all the models and then create the listing
 
-    return render(request, "auctions/create.html", {"form": f})
+    return render(request, "auctions/create.html", {"categories": Category.objects.all().order_by('name').values()})
 
 # Watchlist view
 #@login_required
@@ -233,6 +251,12 @@ def filtered_category_view(request, category_id):
 
     return render(request, "auctions/filtered.html", {"listings": Category_listings,
     "category": category_name})
+
+# Error view
+
+def error_view(request):
+
+    return render(request, "auctions/error.html", {"message": "What did you do?!"})
 
 def login_view(request):
     if request.method == "POST":
