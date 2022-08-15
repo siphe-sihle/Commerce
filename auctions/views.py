@@ -191,12 +191,9 @@ def listing_view(request, id):
     # Extract winning bid obj
     buyer_obj = listing.winner
 
-    auction_winner = buyer_obj.username
-
     # Now check if the logged in user is the winner of the auction
     # UPDATE: already did that on the template
     
-
     # Only render the listing page if the listing is active: We canmake that check on the template itself
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
     "minimum_bid": starting_bid,
@@ -205,7 +202,6 @@ def listing_view(request, id):
     "status": status,
     "listing_activity": listing_activity,
     "close_auction_btn": close_auction_btn,
-    "winner": auction_winner,
     "buyer_obj": buyer_obj})
     pass
 
