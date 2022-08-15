@@ -82,6 +82,14 @@
         </div>
 
     {% endif %}
+
+    <!-- Display winner when the auction is closed and logged_in user won the bid -->
+    {% if user.id == buyer_obj.id %}
+        <div>
+            <h1><em>{{buyer_obj.username}}</em>, you have won this auction YAAAYY!</h1>
+        </div>
+    {% endif %}
+    
     
     <div>
         Category

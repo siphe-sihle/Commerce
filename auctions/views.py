@@ -92,10 +92,23 @@ def listing_view(request, id):
             # Check if current listing has been created by signed-in user
             user_listings = Listing.objects.filter(creator=user_obj)
 
+            # Insert the auction winner for the listing  into the db
+            max_amount = current_listing.offers.aggregate(Max('amount'))
+            current_bid = max_amount.get('amount__max')
+            
+            # firstly filter out the winning bid from the current listing
+            winning_bid = current_listing.offers.filter(amount=current_bid)
+            # Extract winning bid from the select query above
+            buyer_obj = winning_bid[0].bidder
+
+            auction_winner = buyer_obj.username
+
             if current_listing in user_listings:
                 #Give logged in user the ability to close the auction and update listing's "active" field to False
                 current_listing.active = False
-                current_listing.save(update_fields=['active'])
+                # Now perform winner "INSERT" AND update the db
+                current_listing.winner = buyer_obj
+                current_listing.save(update_fields=['active', 'winner'])
 
             messages.info(request, f'{current_listing.title}: Auction has now been closed!')    
             pass
@@ -169,6 +182,21 @@ def listing_view(request, id):
     else:
         close_auction_btn = False
 
+    # Check if logged-in user is the one who won the auction i.e signed in on a closed listing page. 
+    #TODO
+    
+    # firstly filter out the winning bid from the current listing
+
+    winning_bid = listing.offers.filter(amount=current_bid)
+    # Extract winning bid obj
+    buyer_obj = listing.winner
+
+    auction_winner = buyer_obj.username
+
+    # Now check if the logged in user is the winner of the auction
+    # UPDATE: already did that on the template
+    
+
     # Only render the listing page if the listing is active: We canmake that check on the template itself
     return render(request, "auctions/listing.html", {"listing": listing, "comments": comments, "current_bid": current_bid,
     "minimum_bid": starting_bid,
@@ -176,7 +204,9 @@ def listing_view(request, id):
     "count_offers": actual_bid_count,
     "status": status,
     "listing_activity": listing_activity,
-    "close_auction_btn": close_auction_btn})
+    "close_auction_btn": close_auction_btn,
+    "winner": auction_winner,
+    "buyer_obj": buyer_obj})
     pass
 
 # New Listing view
