@@ -17,6 +17,7 @@ def index(request):
     return render(request, "auctions/index.html", {"listings": listings})
 
 # Listing view
+@login_required
 def listing_view(request, id):
 
     # if request method is "POST" i.e if logged in user places a bid on a listing
@@ -206,6 +207,7 @@ def listing_view(request, id):
     pass
 
 # New Listing view
+@login_required
 def create_listing(request):
 
     if request.method == "POST":
@@ -254,8 +256,12 @@ def create_listing(request):
     return render(request, "auctions/create.html", {"categories": Category.objects.all().order_by('name').values()})
 
 # Watchlist view
-#@login_required
+@login_required
 def watchlist_view(request):
+
+    if not request.user.is_authenticated:
+        return render(request, "auctions/error.html", {"message": "You are not logged in, please log in first to view the page."})
+
     # Get current user like so:
     current_user = request.user
     print(f"current user: {current_user.id}")
