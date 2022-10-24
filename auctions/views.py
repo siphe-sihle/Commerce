@@ -316,6 +316,21 @@ def login_view(request):
         return render(request, "auctions/login.html")
 
 
+# My Listings view
+
+@login_required
+def my_listings(request):
+
+    if not request.user.is_authenticated:
+        return render(request, "auctions/error.html", {"message": "You are not logged in, please log in first to view the page."})
+
+    # Get current user like so:
+    current_user = request.user
+    print(f"current user: {current_user.id}")
+    return render(request, "auctions/mylistings.html", {"user_listings": Listing.objects.filter(creator_id=current_user)})
+    pass
+
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
