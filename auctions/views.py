@@ -14,7 +14,22 @@ from django.db.models import Avg, Max, Min, Sum
 def index(request):
     # Get all listings from the database
     listings = Listing.objects.all()
-    return render(request, "auctions/index.html", {"listings": listings})
+
+    # For each listing we get the starting bid or current bid
+    current = 0
+    current_amount_list = []
+    for listing in listings:
+        if listing.active == True:
+            current_amount = listing.offers.aggregate(Max('amount'))
+            print(f"current dict: {current_amount}")
+            print(current_amount['amount__max'])
+            current = current_amount.get('amount__max')
+            # Store the active listing prices in a list
+            current_amount_list.append(current)
+
+    print(f"list: {current_amount_list}")
+    return render(request, "auctions/index.html", {"listings": listings.values().annotate(max_bid_amount = Max('bid__amount')),
+    "prices": current_amount_list})
 
 # Listing view
 @login_required

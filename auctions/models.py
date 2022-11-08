@@ -31,7 +31,7 @@ class Listing(models.Model):
     #starting_bid = models.FloatField(default= 0.00, null= False, blank = True)
  
 class Bid(models.Model):
-    amount = models.FloatField(null=True)
+    amount = models.FloatField(default = 0.0)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="offers", null=True)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="buyer", null=True)
 
