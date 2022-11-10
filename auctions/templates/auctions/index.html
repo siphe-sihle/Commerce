@@ -5,18 +5,18 @@
 
     {% for listing in listings %}
         {% if listing.active == True %}
-            <div class="container-fluid text-center">
+            <div class="container-lg text-center">
                 <div class="row">
-                    <div class="col">
-                        <a href="listings/{{listing.id}}">{{listing.title}}</a>
+                    <div class="col list-group-item-action">
+                        <h5 class="mb-1"><a href="listings/{{listing.id}}">{{listing.title}}</a></h5>
                         <div class="description text-left">
-                            {{listing.description}}
+                            <p class="mb-1">{{listing.description}}</p>
                         </div>
                         <div class="price text-left">
-                            Current Price: <strong><em>R{{listing.max_bid_amount}}</em></strong>
+                            <strong>Current Price: <em>R{{listing.max_bid_amount}}</em></strong>
                         </div>
                         <div class="date text-left">
-                            Date Created: {{listing.pub_date}}
+                            <small>Date Created: {{listing.pub_date}}</small>
                         </div>
                     </div>
                     <div class="col">Image area</div>

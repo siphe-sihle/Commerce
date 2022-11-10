@@ -1,15 +1,16 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h1>My Listings</h1>
-    
-    <div>
-        <ul>
-            {% for listing in user_listings %}
-                <li><a href="listings/{{listing.id}}">{{listing.title}}</a></li>
-            {% empty %}
-            <li> No listings created yet</li>
-            {% endfor %}
-        </ul>
-    </div>    
+    <h1 class="display mb-5 mt-3 text-info">My Listings</h1>
+    <div class="container-fluid">
+        <div>
+            <ul class="list-group">
+                {% for listing in user_listings %}
+                    <li class="list-group-item"><a href="listings/{{listing.id}}">{{listing.title}}</a></li>
+                {% empty %}
+                <li class="list-group-item"> You have not created any listings</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>  
 {% endblock %}

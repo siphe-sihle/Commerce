@@ -1,34 +1,37 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h1>Create Listing</h1>
+    <h1 class="display mb-5 mt-3 text-info">Create Listing</h1>
     
-    <form action="{% url 'create' %}" method="post">
-        {% csrf_token %}
-        
-        <div>
-            <p>Logged in User: {{user.username}}</p>
-            <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
+    <div class="mb-3">
+        <form action="{% url 'create' %}" method="post">
+            {% csrf_token %}
             
-            <input class="form-control" type="text" name="title" placeholder="listing title">
-            <input class="form-control" type="text" name="description" placeholder="Description">
-            <input class="form-control" type="number" name="bid" placeholder="bid">
-        </div>
-        
-        <div>
-            
-           <div> <label for="categories">Select Category (if any):</label></div>
-
-                <select name="categories" id="categories" multiple>
-                    {% for category in categories %}
-                        <option value="{{category.name}}">{{category.name}}</option>
-                    {% endfor %}
+            <div>
+                <p>Logged in User: {{user.username}}</p>
+                <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
                 
-                </select>
-        </div>
-
-        <div>
-            <input class="btn btn-primary" type="submit" value="Create Listing!">
-        </div>
-    </form>
+                <input class="form-control mt-2" type="text" name="title" placeholder="listing title">
+                <input class="form-control mt-2" type="text" name="description" placeholder="Description">
+                <input class="form-control mt-2 mb-3" type="number" name="bid" placeholder="bid">
+            </div>
+            
+            <div>
+                
+               <div class="text-info"> <label for="categories">Select Category (if any):</label></div>
+    
+                    <select class="form-select form-select-lg" name="categories" id="categories" multiple>
+                        {% for category in categories %}
+                            <option value="{{category.name}}">{{category.name}}</option>
+                        {% endfor %}
+                    
+                    </select>
+            </div>
+    
+            <div>
+                <input class="btn btn-primary mt-3" type="submit" value="Create Listing!">
+            </div>
+        </form>
+    </div>
+    
 {% endblock %}

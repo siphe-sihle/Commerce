@@ -2,44 +2,45 @@
 
 {% block body %}
 <div class="container-fluid">
-    <h1 class="display1"> {{listing.title}}</h2>
-        <h3>Listed by: {{listing.creator}}</h3>
+    <h1 class="display1 text-primary mt-3"> {{listing.title}}</h2>
+        <h4 class="text-info">Listed by: {{listing.creator}}</h3>
         <h6>Published on: {{listing.pub_date}}</h4>
-        <p> {{listing.description}}</p>
-        <br>
+
+        <h4 class="text-info mt-5">Description</h4>
+        <p class="lead mb-4"> {{listing.description}}</p>
         
-        <div>
-            <h4>Minimum Bid: </h4>
-                <p>R {{minimum_bid}}</p>
+        <div class="m-1">
+            <h3 class="text-warning">Minimum Bid: </h3>
+                <p class="lead">R {{minimum_bid}}</p>
         </div>
     
         <div>
-            <h4>Current bid: </h4>
-                <p>R {{current_bid}}</p>
-                <p4>{{count_offers}} bid(s) made so far</p4>
+            <h3 class="text-success">Current bid: </h3>
+                <p class="lead"><strong>R {{current_bid}}</strong></p>
+                <p class="text-success"><em>{{count_offers}} bid(s) made so far</em></p>
         </div>
     
         <!--Form section only shows up if the listing is still active/open and not closed-->
     
         {% if listing_activity == True %}
             <!-- Form section to allow logged in user to place a bid -->
-            <div>
+            <div class="input-group input-group-sm mb-3">
                 <form action="{% url 'listings' listing.id %}" method="post">
                     {% csrf_token %}
-                    <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
-                    <input class="form-control" type="number" name="bid" placeholder="bid">
+                    <input class="form-control" type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
+                    <input class="form-control mb-2" type="number" name="bid" placeholder="bid">
     
                     <!--showing success message-->
                     {% if messages %}
-                    <ul class="messages">
+                    <ul class="messages list-group-flush">
                         {% for message in messages %}
-                            <li {% if message.tags%} class="{{ message.tags }}" {% endif %}>{{message}}</li>
+                            <li {% if message.tags%} class="{{ message.tags }} list-group-item text-success" {% endif %}>{{message}}</li>
                         {% endfor %}
                     </ul>
                     {% endif %}
     
                     <!-- Using multiple submit buttons, one to bid, other to atdd item to watchlist. first button submits to the default URL-->
-                    <input class="btn btn-primary" type="submit" value="Place Bid!" id="bid" name="place">
+                    <input class="btn btn-primary m-2" type="submit" value="Place Bid!" id="bid" name="place">
                     <!--This button will post to the "watchlist" url using the formaction attribute to add a custom URL to submit data to-->
     
                     <!-- For this add/remove button, we need to check the watchlist status, whether the listing is the watchlist (true) or otherwise-->
@@ -51,27 +52,28 @@
                     
                     {% if close_auction_btn == True %}
                         <div class="">
-                            <input id="close" class="btn btn-warning" type="submit" value="close Auction" name="close">
+                            <p class="text-danger ml-2"><strong>Close Auction?</strong></p><input id="close" class="btn btn-warning ml-2" type="submit" value="close Auction" name="close">
                         </div>
                     {% endif %}
                     <!--<input id="wishlist" class="btn btn-primary" type="submit" value="Add to Wishlist" name="wishlist">--> 
     
                     <!-- Add ability for users to add comments -->
-                    <div>
-                        <h3>Comments</h3>
-                            <ul>
+                    <div class="my-4 p-1">
+                        <h3 class="display text-info">Comments</h3>
+                            <div class="list-group ml-2">
                                 {% for comment in comments %}
-                                    <div class="comment_username">
-                                        <strong>{{comment.commented_by}}</strong>
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-0 text-primary">{{comment.commented_by}}</h5>
                                     </div>
-                                    <li>{{comment.description}}</li>
+                                    
+                                    <p class="mb-5 pl-3 text-secondary">{{comment.description}}</p>
                                 {% empty %}
-                                <li>No comments posted for this listing</li>
+                                <p class="mb-1 text-secondary">No comments posted for this listing</p>
                                 {% endfor %}
-                            </ul>
+                            </div>
                         <!-- Text Area for comments -->
-                        <p><label for="add_comments"><strong>Type in your thoughts below</strong></label></p>
-                        <textarea id="add_comments" name="add_comments" rows="4" cols="100" placeholder="Add comments to this listing"></textarea>
+                        <p class="text-info"><label for="add_comments"><strong>Type in your thoughts below</strong></label></p>
+                        <textarea id="add_comments" name="add_comments" rows="4" cols="100" placeholder="Add comments to this listing" class="form-control"></textarea>
                         <br>
                         <input type="submit" id="comment" class="btn btn-primary" value="post comment" name="comment">
                     </div>
@@ -93,10 +95,10 @@
         
         
         <div>
-            Category
-            <ul>
+            <h4 class="mb-2">Category</h6>
+            <ul class="list-group-flush">
                 {% for cat in categories %}
-                    <li><a href="{% url 'filtered' cat.id %}">{{cat.name}}</a></li>
+                    <li class="list-group-item d-inline mt-3"><a href="{% url 'filtered' cat.id %}">{{cat.name}}</a></li>
                     {% empty %}
                     <li>No Categories Listed</li>
                 {% endfor %}
@@ -104,9 +106,9 @@
         </div>
     
         <div>
-            <p3>Listed by: <strong>{{listing.creator}}</strong></p3>
+            <p>Listed by: <strong>{{listing.creator}}</strong></p>
             <br>
-            <p4>Listing date: {{listing.pub_date}}</p4>
+            <p>Listing date: {{listing.pub_date}}</p>
         </div>
 </div>
     

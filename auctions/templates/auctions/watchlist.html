@@ -1,15 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h1>Watchlist</h1>
-    
-    <div>
-        <ul>
-            {% for item in items %}
-                <li><a href="listings/{{item.listing.id}}">{{item.listing.title}}</a></li>
-            {% empty %}
-            <li> No listings added yet</li>
-            {% endfor %}
-        </ul>
+    <h1 class="display mb-5 mt-3 text-info">Watchlist</h1>
+    <div class="container-fluid">
+        <div>
+            <ul class="list-group">
+                {% for item in items %}
+                    <li class="list-group-item"><a href="listings/{{item.listing.id}}">{{item.listing.title}}</a></li>
+                {% empty %}
+                <li class="list-group-item"> No listings added yet</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+    
 {% endblock %}

@@ -1,12 +1,17 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h1>Listing categories</h1>
+    <h1 class="display mb-5 mt-3 text-info">Listing categories</h1>
+   
+    <div class="container-fluid">
+        <ul class="list-group">
+            {% for category in categories %}
+                <li class="list-group-item"><a href="{% url 'filtered' category.id %}">{{category.name}}</a></li>
+                {% empty %}
+                <li class="list-group-item"> No Categories added</li>
+            {% endfor %}
+        </ul>
+    </div>
     
-    <ul>
-        {% for category in categories %}
-            <li><a href="{% url 'filtered' category.id %}">{{category.name}}</a></li>
-        {% endfor %}
-    </ul>
     
 {% endblock %}
