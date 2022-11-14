@@ -50,9 +50,23 @@ def listing_view(request, id):
             # Create user Object: works
             #user_obj = User.objects.get(pk=get_creator)
 
-            # Get placed bid on listing: works
-            get_bid = float(request.POST["bid"])
-            
+            # Error Checking: checking for non-numerical values inputed on "place bid"
+
+            form_bid = request.POST["bid"]
+
+            try:
+                float(form_bid)
+            except ValueError:
+                return render(request, "auctions/error.html", {"message": "Please enter a valid bid which is numeric!"})
+
+            get_bid = 0.00
+
+            """
+            if not form_bid.isnumeric():
+                return render(request, "auctions/error.html", {"message": "Please enter a valid bid which is numeric!"})
+            """
+            get_bid = float(form_bid)
+
             #Error checking: Check if the bid is at least as large as the starting bid, and must be greater than any other bids that have been placed (if any)
 
             # Get Max bid for the listing
@@ -65,7 +79,7 @@ def listing_view(request, id):
             
             # Insert this bid for the current listing into the Bid Table
             Bid.objects.create(amount=get_bid, listing=current_listing, bidder=user_obj)
-            messages.info(request, "Bid probably placed!")
+            messages.info(request, "Bid placed!")
 
             # Render the current listing page after placing a bid
             #return HttpResponseRedirect(reverse("listings", args={f"{id}"}))

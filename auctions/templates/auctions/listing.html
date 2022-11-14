@@ -28,7 +28,7 @@
                 <form action="{% url 'listings' listing.id %}" method="post">
                     {% csrf_token %}
                     <input class="form-control" type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
-                    <input class="form-control mb-2" type="number" name="bid" placeholder="bid">
+                    <input class="form-control mb-2" type="number" step=0.01 name="bid" placeholder="bid">
     
                     <!--showing success message-->
                     {% if messages %}
