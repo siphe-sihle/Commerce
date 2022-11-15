@@ -1,8 +1,19 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
 <div class="container-fluid">
-    <h1 class="display1 text-primary mt-3"> {{listing.title}}</h2>
+    <h1 class="display1 text-primary mt-3"> {{listing.title}}
+
+        <div class="img-sm">
+            {% if listing.listing_image %}
+                <img src="" alt="{{listing.title}} product image">
+            {% else %}
+            <img src="{% static 'auctions/Images/product_images.jpg' %}" width="150" height="150" alt="Default profile picture">
+
+            {% endif %}
+        </div>
+    </h2>
         <h4 class="text-info">Listed by: {{listing.creator}}</h3>
         <h6>Published on: {{listing.pub_date}}</h4>
 
@@ -109,7 +120,7 @@
             <p>Listed by: <strong>{{listing.creator}}</strong></p>
             <br>
             <p>Listing date: {{listing.pub_date}}</p>
-        </div>
+         </div>
 </div>
     
 {% endblock %}

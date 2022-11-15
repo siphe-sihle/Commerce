@@ -244,12 +244,28 @@ def create_listing(request):
         get_creator = int(request.POST["creator"])
         print(get_creator)
         get_title = request.POST["title"]
+        
+        # Error checking: check if title and description inputs not empty
+
+        if(not(get_title and get_title.strip())):
+            return render(request, "auctions/error.html", {"message": "Title is empty. please fill in an appropriate title"})
         print(f"title: {get_title}")
         get_description = request.POST["description"]
+
+        if(not(get_description and get_description.strip())):
+            return render(request, "auctions/error.html", {"message": "Description input is empty. please fill in an appropriate description"})
+
         print(f"description: {get_description}")
 
-        get_bid = float(request.POST["bid"])
-        print(f"bid: {get_bid}")
+        # Error checking: make sure that the bid is numeric and a float
+        get_bid = 0.00
+
+        try:
+            get_bid = float(request.POST["bid"])
+            print(f"bid: {get_bid}")
+        
+        except ValueError:
+            return render(request, "auctions/error.html", {"message": "Please enter a numeric value for the bid!"})
 
         # Get (a list) of categories a user will select when creating a listing
         get_categories = request.POST.getlist("categories")

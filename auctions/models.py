@@ -25,6 +25,8 @@ class Listing(models.Model):
     active = models.BooleanField(default=True)
     # New addition: user who won the auction
     winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sold", null=True)
+    # Optional: adding image field to the listing
+    listing_image = models.ImageField(null=True, blank=True, upload_to="Images/listings_pics")
 
     def __str__(self):
         return f"{self.title} - Creator: {self.creator}"

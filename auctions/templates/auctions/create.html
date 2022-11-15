@@ -11,9 +11,9 @@
                 <p>Logged in User: {{user.username}}</p>
                 <input type="number" id="{{user.id}}" name="creator" value="{{user.id}}" hidden>
                 
-                <input class="form-control mt-2" type="text" name="title" placeholder="listing title">
-                <input class="form-control mt-2" type="text" name="description" placeholder="Description">
-                <input class="form-control mt-2 mb-3" type="number" name="bid" placeholder="bid">
+                <input class="form-control mt-2" type="text" name="title" placeholder="listing title" required>
+                <input class="form-control mt-2" type="text" name="description" placeholder="Description" required> 
+                <input class="form-control mt-2 mb-3" type="number" name="bid" placeholder="bid" required>
             </div>
             
             <div>
