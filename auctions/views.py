@@ -279,6 +279,21 @@ def create_listing(request):
         creator_obj = User.objects.get(pk = get_creator)
         create_listing = Listing.objects.create(title = get_title, description = get_description, creator = creator_obj)
 
+        # 1.1 add the ability to add categories to a listing
+        #TODO
+
+        #Error_checking: check if the get_categories list is empty before adding category to listing:
+
+        if len(get_categories) != 0:
+            pass
+        
+        for category in get_categories:
+            # get/create category object 
+            cat_obj = Category.objects.get(name=category)
+            # add the selected category to the new listing:
+            create_listing.category.add(cat_obj)
+        #create_listing.category.add(get_categories)
+
         # 2 Now add bid obj to be able to add amount to a particular listing
         listing_id = create_listing.id
 
