@@ -4,7 +4,7 @@
     <h1 class="display mb-5 mt-3 text-info">Create Listing</h1>
     
     <div class="mb-3">
-        <form action="{% url 'create' %}" method="post">
+        <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
             <div>
@@ -26,6 +26,10 @@
                         {% endfor %}
                     
                     </select>
+            </div>
+
+            <div class="my-3 text-info">
+                {{form.as_p}}
             </div>
     
             <div>

@@ -2,6 +2,7 @@
 from auctions.models import *
 from django.db import models
 from django.forms import FloatField, ModelForm, NumberInput, Textarea
+from django import forms
 #from .models import *
 
 # Create an "add listing" form
@@ -22,3 +23,9 @@ class CreateListingForm(ModelForm):
             'description': Textarea(attrs={'class': 'form-control'})
         }
     pass
+
+# Nov 2022 implementation
+class ImgForm(forms.Form):
+    #name = forms.CharField()
+    image_file = forms.ImageField()
+

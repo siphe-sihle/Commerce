@@ -300,7 +300,16 @@ def create_listing(request):
         # Create bid for this particular listing
         bid_obj = Bid.objects.create(amount = get_bid, listing = create_listing, bidder = creator_obj) 
 
-        #2.1 update the Listing field for the bid
+        # Upload image logic to save the image file into the database
+
+        photo_form = ImgForm(request.POST, request.FILES)
+
+        if photo_form.is_valid():
+            img = photo_form.cleaned_data.get("image_file")
+
+            #Now wrap the image file into a db object to be saved
+            create_listing.listing_image = img
+            create_listing.save()
 
         # Redirect user to the newly added listing page
         return HttpResponseRedirect(reverse("listings", args={f"{listing_id}"}))
@@ -313,7 +322,8 @@ def create_listing(request):
     #For now we will create the form manually for the simplicity of it
     # Get all the models and then create the listing
 
-    return render(request, "auctions/create.html", {"categories": Category.objects.all().order_by('name').values()})
+    return render(request, "auctions/create.html", {"categories": Category.objects.all().order_by('name').values(),
+    "form": ImgForm()})
 
 # Watchlist view
 @login_required

@@ -7,7 +7,7 @@
 
         <div class="img-sm">
             {% if listing.listing_image %}
-                <img src="" alt="{{listing.title}} product image">
+                <img src="{{listing.listing_image.url}}" alt="product image" width="200" height="200">
             {% else %}
             <img src="{% static 'auctions/Images/product_images.jpg' %}" width="150" height="150" alt="Default profile picture">
 
