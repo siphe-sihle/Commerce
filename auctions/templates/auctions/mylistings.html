@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+<title>{% block title %}{{user.username}}'s Listings{% endblock %}</title>
 {% block body %}
     <h1 class="display mb-5 mt-3 text-info">My Listings</h1>
     <div class="container-fluid">

@@ -1,6 +1,8 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 
+<title>{% block title %}{{listing.title}}- Auctions{% endblock %}</title>
+
 {% block body %}
 <div class="container-fluid">
     <h1 class="display1 text-primary mt-3"> {{listing.title}}

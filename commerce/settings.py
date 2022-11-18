@@ -120,6 +120,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Media file/directory
+MEDIA_ROOT = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# For good measure!
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 # Settings for @login_required decorator
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
