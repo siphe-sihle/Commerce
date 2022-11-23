@@ -28,7 +28,7 @@ def index(request):
             current_amount_list.append(current)
 
     print(f"list: {current_amount_list}")
-    return render(request, "auctions/index.html", {"listings": listings.values().annotate(max_bid_amount = Max('bid__amount')),
+    return render(request, "auctions/index.html", {"listings": listings.annotate(max_bid_amount=Max('offers__amount')),
     "prices": current_amount_list})
 
 # Listing view
