@@ -21,10 +21,7 @@ def index(request):
     for listing in listings:
         if listing.active == True:
             current_amount = listing.offers.aggregate(Max('amount'))
-            print(f"current dict: {current_amount}")
-            print(current_amount['amount__max'])
             current = current_amount.get('amount__max')
-            # Store the active listing prices in a list
             current_amount_list.append(current)
 
     print(f"list: {current_amount_list}")
@@ -61,10 +58,6 @@ def listing_view(request, id):
 
             get_bid = 0.00
 
-            """
-            if not form_bid.isnumeric():
-                return render(request, "auctions/error.html", {"message": "Please enter a valid bid which is numeric!"})
-            """
             get_bid = float(form_bid)
 
             #Error checking: Check if the bid is at least as large as the starting bid, and must be greater than any other bids that have been placed (if any)
@@ -88,11 +81,7 @@ def listing_view(request, id):
         user_watchlist = Watchlist.objects.filter(user=get_creator)
 
         if 'add' in request.POST:
-            #current_listing = Listing.objects.get(pk=id)
-            # Note: The line below does not work when using "request.user" because that is an object, not a number or string 
-            #get_creator = int(request.POST["creator"])
-            print(f"current: {get_creator}")
-            #userobj = User.objects.get(pk=get_creator)
+            
             #add item to user's watchlist, 1st check if listing is already in watchlist: FIX LATER - WORKS!
             
             for item in user_watchlist:
@@ -195,7 +184,6 @@ def listing_view(request, id):
 
     # Initialise wishlist_status
     status = None
-    print(f"watchlist: {watchlist_status}")
 
     # Check if current listing in listing page is in the watchlist for the currently logged_in user
     for item in watchlist_status:
@@ -242,34 +230,28 @@ def create_listing(request):
     if request.method == "POST":
         # User in question (logged in user) that is creating the listing, get ID of the user, data lives in request.POST
         get_creator = int(request.POST["creator"])
-        print(get_creator)
         get_title = request.POST["title"]
         
         # Error checking: check if title and description inputs not empty
 
         if(not(get_title and get_title.strip())):
             return render(request, "auctions/error.html", {"message": "Title is empty. please fill in an appropriate title"})
-        print(f"title: {get_title}")
         get_description = request.POST["description"]
 
         if(not(get_description and get_description.strip())):
             return render(request, "auctions/error.html", {"message": "Description input is empty. please fill in an appropriate description"})
-
-        print(f"description: {get_description}")
 
         # Error checking: make sure that the bid is numeric and a float
         get_bid = 0.00
 
         try:
             get_bid = float(request.POST["bid"])
-            print(f"bid: {get_bid}")
         
         except ValueError:
             return render(request, "auctions/error.html", {"message": "Please enter a numeric value for the bid!"})
 
         # Get (a list) of categories a user will select when creating a listing
         get_categories = request.POST.getlist("categories")
-        print(f"selected categories: {get_categories}")
 
         # Here's how its gonna work:
         # 1. Create and save a listing 1st before saving the amount for the listing.
@@ -334,12 +316,12 @@ def watchlist_view(request):
 
     # Get current user like so:
     current_user = request.user
-    print(f"current user: {current_user.id}")
     return render(request, "auctions/watchlist.html", {"items": Watchlist.objects.filter(user_id=current_user)})
     pass
 
 
 # Categories view
+@login_required
 def category_view(request):
     # get all categories from the database
 
@@ -347,7 +329,7 @@ def category_view(request):
     pass
 
 # Filtered catgories view
-
+@login_required
 def filtered_category_view(request, category_id):
     # get all listings that belong to a particular category
 
@@ -361,7 +343,7 @@ def filtered_category_view(request, category_id):
     "category": category_name})
 
 # Error view
-
+@login_required
 def error_view(request):
 
     return render(request, "auctions/error.html", {"message": "What did you do?!"})
@@ -396,9 +378,7 @@ def my_listings(request):
 
     # Get current user like so:
     current_user = request.user
-    print(f"current user: {current_user.id}")
     return render(request, "auctions/mylistings.html", {"user_listings": Listing.objects.filter(creator_id=current_user)})
-    pass
 
 
 def logout_view(request):
