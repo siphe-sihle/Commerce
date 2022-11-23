@@ -10,6 +10,7 @@ from django.contrib import messages
 from .models import *
 from auctions.forms import *
 from django.db.models import Avg, Max, Min, Sum
+from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
     # Get all listings from the database
@@ -24,7 +25,6 @@ def index(request):
             current = current_amount.get('amount__max')
             current_amount_list.append(current)
 
-    print(f"list: {current_amount_list}")
     return render(request, "auctions/index.html", {"listings": listings.annotate(max_bid_amount=Max('offers__amount')),
     "prices": current_amount_list})
 
@@ -161,8 +161,6 @@ def listing_view(request, id):
     min_amount = listing.offers.aggregate(Min('amount'))
     starting_bid = min_amount.get('amount__min')
     current_bid = max_amount.get('amount__max')
-    print(f"current_amount: {current_bid}")
-    #current_bid = Bid.objects.filter(listing_id = id).last()
 
     # Now get the list of all categories for a particular listing
     categories = Category.objects.all()
@@ -261,6 +259,12 @@ def create_listing(request):
         creator_obj = User.objects.get(pk = get_creator)
         create_listing = Listing.objects.create(title = get_title, description = get_description, creator = creator_obj)
 
+        # Get the list of categories from the database
+        cat_db = Category.objects.all().values()
+        cat_list_db = []
+
+        for cat in cat_db:
+            cat_list_db.append(cat["name"])
         # 1.1 add the ability to add categories to a listing
         #TODO
 
@@ -273,8 +277,13 @@ def create_listing(request):
             # get/create category object 
             cat_obj = Category.objects.get(name=category)
             # add the selected category to the new listing:
+            # Check if selected category is in thge category list in the db
+            if category not in cat_list_db:
+                # Do not proceed with creating the listing, rather delete it and render an error message 
+                create_listing.delete()
+                return render(request, "auctions/error.html", {"message": "selected category(s) not does not exist!"})
+
             create_listing.category.add(cat_obj)
-        #create_listing.category.add(get_categories)
 
         # 2 Now add bid obj to be able to add amount to a particular listing
         listing_id = create_listing.id

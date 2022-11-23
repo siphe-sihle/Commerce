@@ -5,7 +5,7 @@
 
 {% block body %}
 <div class="container-fluid">
-    <h1 class="display1 text-primary my-3"> {{listing.title}}
+    <h1 class="display1 text-primary my-3"><u>{{listing.title}}</u></h1>
 
         <div class="img-md mt-2">
             {% if listing.listing_image %}
@@ -93,23 +93,23 @@
                 </form>
             </div>
         {% else %}
-            <div>
-                <h1><em>The auction for this listing has been closed and no longer active for bidding</em></h1>
+            <div class="border border-danger">
+                <h1 class="text-danger"><em>The auction for this listing has been closed and no longer active for bidding</em></h1>
             </div>
     
         {% endif %}
     
         <!-- Display winner when the auction is closed and logged_in user won the bid -->
         {% if user.id == buyer_obj.id %}
-            <div>
-                <h1><em>{{buyer_obj.username}}</em>, you have won this auction YAAAYY!</h1>
+            <div class="border border-success">
+                <h1 class="text-success"><em>{{buyer_obj.username}}</em>, you have won this auction YAAAYY!</h1>
             </div>
         {% endif %}
         
         
         <div>
-            <h4 class="mb-2">Category</h6>
-            <ul class="list-group-flush">
+            <h4 class="mb-4 mt-5 text-primary">Category</h6>
+            <ul class="list-group-flush mt-2">
                 {% for cat in categories %}
                     <li class="list-group-item d-inline mt-3"><a href="{% url 'filtered' cat.id %}">{{cat.name}}</a></li>
                     {% empty %}
@@ -118,7 +118,7 @@
             </ul>
         </div>
     
-        <div>
+        <div class="text-info">
             <p>Listed by: <strong>{{listing.creator}}</strong></p>
             <br>
             <p>Listing date: {{listing.pub_date}}</p>
