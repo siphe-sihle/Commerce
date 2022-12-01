@@ -93,20 +93,33 @@
                 </form>
             </div>
         {% else %}
-            <div class="border border-danger">
-                <h1 class="text-danger"><em>The auction for this listing has been closed and no longer active for bidding</em></h1>
+            <div class="alert alert-danger" role="alert">
+                <h2 class="text-danger"><em>The auction for this listing has been closed and no longer active for bidding</em></h2>
             </div>
     
         {% endif %}
     
         <!-- Display winner when the auction is closed and logged_in user won the bid -->
         {% if user.id == buyer_obj.id %}
-            <div class="border border-success">
-                <h1 class="text-success"><em>{{buyer_obj.username}}</em>, you have won this auction YAAAYY!</h1>
+            <div class="alert alert-success" role="alert">
+                <h1><em>{{buyer_obj.username}}</em>, you have won this auction YAAAYY!</h1>
             </div>
         {% endif %}
         
-        
+        <!-- Display user comments even if the listing has been closed -->
+        <div class="my-4 p-1">
+            <h3 class="display text-info"><u>Comments</u></h3>
+                <div class="list-group ml-2">
+                    {% for comment in comments %}
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-0 text-primary">{{comment.commented_by}}</h5>
+                        </div>
+                        
+                        <p class="mb-2 pl-3 text-secondary">{{comment.description}}</p>
+                    {% empty %}
+                    <p class="mb-1 text-secondary">No comments posted for this listing</p>
+                    {% endfor %}
+                </div>
         <div>
             <h4 class="mb-4 mt-5 text-primary">Category</h6>
             <ul class="list-group-flush mt-2">
